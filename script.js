@@ -111,11 +111,17 @@
     if (yearEl) yearEl.textContent = new Date().getFullYear();
 
     // -----------------------------------------------------------------------
-    // Contact form (mailto fallback)
+    // Contact form
+    //   1) Envia e-mail automatico para engenhariavipma@gmail.com via FormSubmit
+    //   2) Redireciona o usuario para o WhatsApp com a mensagem pre-preenchida
     // -----------------------------------------------------------------------
     const form = document.getElementById('contactForm');
     if (form) {
-        form.addEventListener('submit', (e) => {
+        const WHATSAPP_NUMBER = '5598988211191';
+        const TARGET_EMAIL    = 'engenhariavipma@gmail.com';
+        const DASH            = '-';
+
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const data = new FormData(form);
@@ -126,21 +132,61 @@
             const mensagem = (data.get('mensagem') || '').toString().trim();
 
             if (!nome || !email || !mensagem) {
-                alert('Por favor, preencha os campos obrigatórios (nome, e-mail e mensagem).');
+                alert('Por favor, preencha os campos obrigatorios (nome, e-mail e mensagem).');
                 return;
             }
 
-            const subject = encodeURIComponent(`Solicitação de proposta — ${servico || 'VIP Engenharia'}`);
-            const body = encodeURIComponent(
-                `Nome: ${nome}\n` +
-                `E-mail: ${email}\n` +
-                `Telefone: ${telefone || '—'}\n` +
-                `Tipo de demanda: ${servico || '—'}\n\n` +
-                `Mensagem:\n${mensagem}\n`
-            );
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalBtnHTML = submitBtn ? submitBtn.innerHTML : '';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = 'Enviando...';
+            }
 
-            // Abre o cliente de e-mail do usuário
-            window.location.href = `mailto:engenhariavipma@gmail.com?subject=${subject}&body=${body}`;
+            // Monta a mensagem de WhatsApp com os dados do formulario
+            const waLines = [
+                'Ola! Acabei de enviar uma solicitacao de proposta pelo site da VIP Engenharia.',
+                '',
+                '*Nome:* ' + nome,
+                '*E-mail:* ' + email,
+                '*Telefone:* ' + (telefone || DASH),
+                '*Tipo de demanda:* ' + (servico || DASH),
+                '',
+                '*Mensagem:*',
+                mensagem
+            ];
+            const waMessage = encodeURIComponent(waLines.join('\n'));
+            const waURL = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + waMessage;
+
+            // Envia e-mail via FormSubmit (sem necessidade de backend proprio)
+            const payload = new FormData();
+            payload.append('Nome',            nome);
+            payload.append('E-mail',          email);
+            payload.append('Telefone',        telefone || DASH);
+            payload.append('Tipo de demanda', servico || DASH);
+            payload.append('Mensagem',        mensagem);
+            payload.append('_subject',        'Nova mensagem do site - ' + (servico || 'VIP Engenharia'));
+            payload.append('_template',       'table');
+            payload.append('_captcha',        'false');
+            payload.append('_replyto',        email);
+
+            try {
+                await fetch('https://formsubmit.co/ajax/' + TARGET_EMAIL, {
+                    method: 'POST',
+                    headers: { 'Accept': 'application/json' },
+                    body: payload
+                });
+            } catch (err) {
+                console.warn('Falha ao enviar e-mail automatico:', err);
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnHTML;
+                }
+                form.reset();
+                // Redireciona o usuario para o WhatsApp em nova aba
+                window.open(waURL, '_blank');
+            }
         });
     }
 
