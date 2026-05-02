@@ -918,7 +918,9 @@ p { margin: 0 0 1em; }
     transform: translateY(-6px);
     box-shadow: var(--shadow);
 }
-.project-img {
+.project-img,
+.project-slider {
+    position: relative;
     overflow: hidden;
     aspect-ratio: 16/10;
     background: #ddd;
@@ -929,6 +931,102 @@ p { margin: 0 0 1em; }
     transition: transform .6s var(--ease);
 }
 .project:hover .project-img img { transform: scale(1.06); }
+
+/* Carrossel de fotos dos projetos */
+.project-slides {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform .55s cubic-bezier(.4, 0, .2, 1);
+    will-change: transform;
+}
+.project-slides > img {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(20, 20, 22, .55);
+    color: #fff;
+    border: 0;
+    cursor: pointer;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    line-height: 1;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    transition: background .2s, transform .2s, opacity .2s;
+    opacity: .85;
+}
+.slider-btn:hover,
+.slider-btn:focus-visible {
+    background: rgba(20, 20, 22, .9);
+    transform: translateY(-50%) scale(1.06);
+    opacity: 1;
+    outline: none;
+}
+.slider-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.slider-btn--prev { left: 12px; }
+.slider-btn--next { right: 12px; }
+
+.slider-dots {
+    position: absolute;
+    bottom: 12px;
+    left: 0; right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    z-index: 3;
+    pointer-events: none;
+}
+.slider-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .55);
+    border: 1px solid rgba(0, 0, 0, .2);
+    cursor: pointer;
+    padding: 0;
+    transition: background .2s, transform .2s;
+    pointer-events: auto;
+}
+.slider-dot.is-active {
+    background: #fff;
+    transform: scale(1.25);
+}
+
+/* Esconde controles quando há só 1 foto */
+.project-slider[data-count="1"] .slider-btn,
+.project-slider[data-count="1"] .slider-dots {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    .slider-btn { width: 34px; height: 34px; }
+    .slider-btn--prev { left: 8px; }
+    .slider-btn--next { right: 8px; }
+}
 .project-meta { padding: 24px 26px 28px; }
 .project-tag {
     display: inline-block;

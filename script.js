@@ -111,13 +111,84 @@
     if (yearEl) yearEl.textContent = new Date().getFullYear();
 
     // -----------------------------------------------------------------------
+    // Carrossel de fotos dos projetos
+    // -----------------------------------------------------------------------
+    document.querySelectorAll('.project-slider').forEach((slider) => {
+        const track = slider.querySelector('.project-slides');
+        const slides = track ? track.querySelectorAll('img') : [];
+        const total = slides.length;
+        const prevBtn = slider.querySelector('.slider-btn--prev');
+        const nextBtn = slider.querySelector('.slider-btn--next');
+        const dotsBox = slider.querySelector('.slider-dots');
+
+        // Quando há apenas uma foto, esconde controles
+        if (total <= 1) {
+            if (prevBtn) prevBtn.style.display = 'none';
+            if (nextBtn) nextBtn.style.display = 'none';
+            if (dotsBox) dotsBox.style.display = 'none';
+            return;
+        }
+
+        let current = 0;
+
+        // Cria os indicadores (dots)
+        if (dotsBox) {
+            for (let i = 0; i < total; i++) {
+                const dot = document.createElement('button');
+                dot.type = 'button';
+                dot.className = 'slider-dot' + (i === 0 ? ' is-active' : '');
+                dot.setAttribute('aria-label', 'Ir para foto ' + (i + 1));
+                dot.dataset.index = String(i);
+                dotsBox.appendChild(dot);
+            }
+        }
+        const dots = slider.querySelectorAll('.slider-dot');
+
+        const update = () => {
+            track.style.transform = 'translateX(-' + (current * 100) + '%)';
+            dots.forEach((d, i) => d.classList.toggle('is-active', i === current));
+        };
+
+        const goTo = (idx) => {
+            current = ((idx % total) + total) % total;
+            update();
+        };
+
+        if (prevBtn) prevBtn.addEventListener('click', (e) => { e.preventDefault(); goTo(current - 1); });
+        if (nextBtn) nextBtn.addEventListener('click', (e) => { e.preventDefault(); goTo(current + 1); });
+        dots.forEach((dot) => {
+            dot.addEventListener('click', () => goTo(parseInt(dot.dataset.index, 10) || 0));
+        });
+
+        // Navegação por teclado quando o foco está dentro do slider
+        slider.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft')  { goTo(current - 1); e.preventDefault(); }
+            if (e.key === 'ArrowRight') { goTo(current + 1); e.preventDefault(); }
+        });
+
+        // Suporte a swipe em telas touch
+        let startX = 0;
+        let isTouching = false;
+        track.addEventListener('touchstart', (e) => {
+            isTouching = true;
+            startX = e.touches[0].clientX;
+        }, { passive: true });
+        track.addEventListener('touchend', (e) => {
+            if (!isTouching) return;
+            isTouching = false;
+            const dx = (e.changedTouches[0].clientX - startX);
+            if (Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1));
+        });
+    });
+
+    // -----------------------------------------------------------------------
     // Contact form
     //   1) Envia e-mail automatico para engenhariavipma@gmail.com via FormSubmit
     //   2) Redireciona o usuario para o WhatsApp com a mensagem pre-preenchida
     // -----------------------------------------------------------------------
     const form = document.getElementById('contactForm');
     if (form) {
-        const WHATSAPP_NUMBER = '5598988211191';
+        const WHATSAPP_NUMBER = '5598984642898';
         const TARGET_EMAIL    = 'engenhariavipma@gmail.com';
         const DASH            = '-';
 
