@@ -922,7 +922,7 @@ p { margin: 0 0 1em; }
 .project-slider {
     position: relative;
     overflow: hidden;
-    aspect-ratio: 16/10;
+    aspect-ratio: 4 / 5;
     background: #ddd;
 }
 .project-img img {
@@ -935,6 +935,9 @@ p { margin: 0 0 1em; }
 /* Carrossel de fotos dos projetos */
 .project-slides {
     display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
     width: 100%;
     height: 100%;
     transition: transform .55s cubic-bezier(.4, 0, .2, 1);
@@ -942,9 +945,11 @@ p { margin: 0 0 1em; }
 }
 .project-slides > img {
     flex: 0 0 100%;
+    min-width: 100%;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
     display: block;
     user-select: none;
     -webkit-user-drag: none;
