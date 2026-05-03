@@ -209,9 +209,13 @@ p { margin: 0 0 1em; }
 }
 .site-header.is-scrolled .brand { color: var(--c-red); }
 .brand-mark {
-    width: 30px; height: 38px;
+    width: 30px;
+    height: 38px;
     flex-shrink: 0;
+    flex-grow: 0;
+    aspect-ratio: 64 / 80;
     color: currentColor;
+    display: block;
 }
 .brand-text {
     font-family: var(--ff-display);
@@ -922,8 +926,12 @@ p { margin: 0 0 1em; }
 .project-slider {
     position: relative;
     overflow: hidden;
-    aspect-ratio: 16 / 10;
-    background: #f3f3f3;
+    aspect-ratio: 16 / 9;
+    background: #fafafa;
+}
+.project-slider {
+    padding: 14px;
+    box-sizing: border-box;
 }
 .project-img img {
     width: 100%; height: 100%;
@@ -948,9 +956,10 @@ p { margin: 0 0 1em; }
     min-width: 100%;
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    max-height: 100%;
+    object-fit: contain !important;
     object-position: center;
-    background: #f3f3f3;
+    background: transparent;
     display: block;
     user-select: none;
     -webkit-user-drag: none;
@@ -993,8 +1002,8 @@ p { margin: 0 0 1em; }
     stroke-linecap: round;
     stroke-linejoin: round;
 }
-.slider-btn--prev { left: 12px; }
-.slider-btn--next { right: 12px; }
+.slider-btn--prev { left: 8px; }
+.slider-btn--next { right: 8px; }
 
 .slider-dots {
     position: absolute;
