@@ -2,6 +2,26 @@
    VIP ENGENHARIA — interações
    ========================================================================== */
 
+// Google Ads — rastreamento de conversão por clique
+function gtag_report_conversion(url) {
+    var callback = function () {
+        if (typeof(url) != 'undefined') {
+            window.open(url, '_blank');
+        }
+    };
+    if (typeof gtag === 'function') {
+        gtag('event', 'conversion', {
+            'send_to': 'AW-18138030541/_hwkCKq1kKccEM3D8chD',
+            'value': 1.0,
+            'currency': 'BRL',
+            'event_callback': callback
+        });
+    } else {
+        callback();
+    }
+    return false;
+}
+
 (function () {
     'use strict';
 
@@ -254,9 +274,9 @@
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = originalBtnHTML;
                 }
+                // Dispara conversao para o Google Ads e redireciona para WhatsApp
+                gtag_report_conversion(waURL);
                 form.reset();
-                // Redireciona o usuario para o WhatsApp em nova aba
-                window.open(waURL, '_blank');
             }
         });
     }
