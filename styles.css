@@ -338,6 +338,20 @@ p { margin: 0 0 1em; }
         margin: 12px var(--gutter);
         text-align: center;
     }
+
+    /* -----------------------------------------------------------------
+       Mobile: substitui a "faixa branca" do header rolado por uma
+       barra escura translúcida, mantendo o logo BRANCO sempre. Assim
+       o header combina com o tema escuro do site em qualquer rolagem.
+       ----------------------------------------------------------------- */
+    .site-header.is-scrolled::before {
+        background: rgba(1, 1, 1, .85);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(0,0,0,.25);
+    }
+    .site-header.is-scrolled .brand { color: var(--c-white); }
+    .site-header.is-scrolled .brand-logo { filter: brightness(0) invert(1); }
+    .site-header.is-scrolled .nav-toggle { color: var(--c-white); }
 }
 
 /* ==========================================================================
