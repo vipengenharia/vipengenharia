@@ -28,14 +28,25 @@ function gtag_report_conversion(url) {
     // -----------------------------------------------------------------------
     // Header scroll state
     // -----------------------------------------------------------------------
+    // No mobile (iOS Safari, Chrome Android), a barra de URL do navegador
+    // colapsa/expande dinamicamente conforme o usuário rola — isso altera
+    // window.scrollY mesmo quando o usuário "não rolou de verdade".
+    // Por isso usamos a posição do hero como referência: o header só fica
+    // branco (is-scrolled) quando o hero deixa de estar visível.
+    // -----------------------------------------------------------------------
     const header = document.getElementById('siteHeader');
+    const hero   = document.querySelector('.hero');
     const setHeaderState = () => {
         if (!header) return;
-        if (window.scrollY > 30) header.classList.add('is-scrolled');
+        // Páginas internas (servicos/*) não têm .hero — mantém branco sempre.
+        if (!hero) { header.classList.add('is-scrolled'); return; }
+        const heroBottom = hero.getBoundingClientRect().bottom;
+        if (heroBottom < 80) header.classList.add('is-scrolled');
         else header.classList.remove('is-scrolled');
     };
     setHeaderState();
     window.addEventListener('scroll', setHeaderState, { passive: true });
+    window.addEventListener('resize', setHeaderState, { passive: true });
 
     // -----------------------------------------------------------------------
     // Mobile nav toggle
